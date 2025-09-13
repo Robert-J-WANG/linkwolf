@@ -9,6 +9,8 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+    env_file:
+      - env/.env.development
 
   frontend:
     build:
@@ -19,5 +21,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    env_file:
+      - env/.env.development
     depends_on:
       - backend

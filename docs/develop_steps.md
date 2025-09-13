@@ -470,5 +470,142 @@ git merge chore/1-project-init
 git push remote origin develop
 ```
 
+#### 7. Development env init 
+
+Create  feature branch
+
+```
+git switch develop
+git checkout -b chore/2-env-init
+git pull remote origin develop
+```
+
+Create .env.development
+
+```bash
+# /env/.env.development
+# 环境标识
+NODE_ENV=development
+
+# 后端配置
+BACKEND_PORT=3001
+
+# 前端配置
+NEXT_PUBLIC_API_URL=http://localhost:3001
+
+```
+
+install dotenv and set up config to use env
+
+```bash
+# cd backend                                                                                                 
+npm install dotenv
+npm install -D @types/dotenv
+```
+
+```ts
+# /backend/src/config.ts
+
+import dotenv from "dotenv";
+
+dotenv.config({ path: "../env/.env.development" });
+
+export const config = {
+  port: process.env.BACKEND_PORT || 3001,
+  nodeEnv: process.env.NODE_ENV || "development",
+};
+
+```
+
+Backend / frondend use env 
+
+```ts
+// backend/src/app.ts
+
+import express from "express";
+import cors from "cors";
+import { config } from "./config";
+const app = express();
+
+...
+
+const PORT = config.port;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+export default app;
+
+```
+
+```tsx
+// backend/src/app/page.tsx
+export default function Home() {
+...
+  useEffect(() => {
+    // const API_URL = "http://localhost:3001";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+   ...
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+     ...
+    </main>
+  );
+}
+
+```
+
+docker-compose use env
+
+```yaml
+// docker-compose.dev.yml
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - env/.env.development
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - env/.env.development
+    depends_on:
+      - backend
+```
+
+Test env on docker
+
+```
+npm run dev
+```
+
+update branch and merge to develop
+
+```bash
+git add .
+git commit -m 'env init'
+git push remote origin chore/2-env-init
+
+git switch develop
+git merge chore/2-env-init
+git push remote origin develop
+```
+
 
 

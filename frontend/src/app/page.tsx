@@ -15,7 +15,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const API_URL = "http://localhost:3001";
+    // const API_URL = "http://localhost:3001";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     axios
       .get(`${API_URL}/health`)
       .then((response) => {

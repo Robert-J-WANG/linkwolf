@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { config } from "./config";
 const app = express();
 
 // 基础中间件
@@ -15,7 +16,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-const PORT = 3001;
+const PORT = config.port;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
