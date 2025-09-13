@@ -461,5 +461,14 @@ git commit -m 'project init'
 git push remote origin chore/1-project-init
 ```
 
+Merge to develop branch
+
+```bash
+git switch develop
+git pull remote origin develop
+git merge chore/1-project-init
+git push remote origin develop
+```
+
 
 
